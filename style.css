@@ -19,7 +19,7 @@ html {
 
 main {
     display: flex;
-    height: 100vh;
+    height: 100dvh;
     overflow-x: scroll;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
@@ -33,13 +33,13 @@ section {
     position: relative;
     flex: none;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     scroll-snap-align: start;
 
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    padding: 10vh 10vw;
+    padding: 10dvh 10vw;
     display: flex;
     flex-direction: column;
 }
@@ -75,18 +75,6 @@ section {
     font-size: 1rem;
 }
 
-.top::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.1) 0%,
-        rgba(0, 0, 0, 0.5) 100%
-    );
-    z-index: 1;
-}
-
 /* input */
 .input-container {
   position: relative;
@@ -112,12 +100,14 @@ section {
   color: #fff;
   transition: all 0.3s ease;
   pointer-events: none;
+  display: flex;
+  align-items: center;
 }
 
 .input-container input[type="password"]:focus ~ .label,
 .input-container input[type="password"]:valid ~ .label {
   top: -20px;
-  font-size: 16px;
+  font-size: 1rem;
   color: #333;
 }
 
