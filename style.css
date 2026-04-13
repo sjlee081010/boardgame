@@ -20,13 +20,103 @@ main::-webkit-scrollbar {
 }
 
 section {
+    position: relative;
     flex: none;
     width: 100vw;
     height: 100vh;
     scroll-snap-align: start;
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 10vh 10vw;
+    display: flex;
+    flex-direction: column;
 }
 
-.section01 { background: red; }
+.content {
+    color: #fff;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.content .label {
+    font-size: 1.7rem;
+    font-weight: 600;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #fff;
+}
+
+.content > .top .name {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+}
+
+.content > .top .info {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.content > .top .quote {
+    font-size: 1rem;
+}
+
+/* input */
+.input-container {
+  position: relative;
+  margin: 50px auto;
+  width: 100%;
+}
+
+.input-container input[type="password"] {
+  font-size: 20px;
+  letter-spacing: 2px;
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #fff;
+  padding: 5px 0;
+  background-color: transparent;
+  outline: none;
+}
+
+.input-container .label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #fff;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.input-container input[type="password"]:focus ~ .label,
+.input-container input[type="password"]:valid ~ .label {
+  top: -20px;
+  font-size: 16px;
+  color: #333;
+}
+
+.input-container .underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background-color: #333;
+  transform: scaleX(0);
+  transition: all 0.3s ease;
+}
+
+.input-container input[type="password"]:focus ~ .underline,
+.input-container input[type="password"]:valid ~ .underline {
+  transform: scaleX(1);
+}
+
+
+
 .section02 { background: orange; }
 .section03 { background: yellow; }
 .section04 { background: green; }
