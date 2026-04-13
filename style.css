@@ -1,0 +1,34 @@
+@charset "utf-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    box-sizing: border-box;
+}
+
+main {
+    display: flex;
+    height: 100vh;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+main::-webkit-scrollbar {
+    display: none;
+}
+
+section {
+    flex: none;
+    width: 100vw;
+    height: 100vh;
+    scroll-snap-align: start;
+}
+
+.section01 { background: red; }
+.section02 { background: orange; }
+.section03 { background: yellow; }
+.section04 { background: green; }
+.section05 { background: blue; }
+.section06 { background: navy; }

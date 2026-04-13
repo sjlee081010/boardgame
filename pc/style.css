@@ -1,0 +1,145 @@
+@charset "utf-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    box-sizing: border-box;
+}
+
+section:nth-child(2) { background-color: red; }
+section:nth-child(3) { background-color: orange; }
+section:nth-child(4) { background-color: yellow; }
+section:nth-child(5) { background-color: green; }
+section:nth-child(6) { background-color: blue; }
+
+main {
+    height: 100vh;
+    display: flex;
+}
+
+main > section {
+    flex: 1;
+    cursor: pointer;
+    overflow: hidden;
+    transition: flex 0.4s ease;
+}
+
+section > .container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: transform 0.4s ease;
+}
+
+section > .container::before {
+    content: "";
+    position: absolute;
+    background: inherit;
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+section:not(.active):hover > .container {
+    transform: scale(1.03);
+}
+
+.active {
+    flex: 1.5;
+}
+
+
+/* 액티브 박스 */
+.active-box {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.active-box > .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.content .label {
+    font-size: 1.7rem;
+    font-weight: 600;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #fff;
+}
+
+.content > .top .name {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+}
+
+.content > .top .info {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.content > .top .quote {
+    font-size: 1rem;
+}
+
+/* 액티브 박스 - input */
+.input-container {
+  position: relative;
+  margin: 50px auto;
+  width: 100%;
+}
+
+.input-container input[type="text"] {
+  font-size: 20px;
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #fff;
+  padding: 5px 0;
+  background-color: transparent;
+  outline: none;
+}
+
+.input-container .label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #fff;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.input-container input[type="text"]:focus ~ .label,
+.input-container input[type="text"]:valid ~ .label {
+  top: -20px;
+  font-size: 16px;
+  color: #333;
+}
+
+.input-container .underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background-color: #333;
+  transform: scaleX(0);
+  transition: all 0.3s ease;
+}
+
+.input-container input[type="text"]:focus ~ .underline,
+.input-container input[type="text"]:valid ~ .underline {
+  transform: scaleX(1);
+}
+
