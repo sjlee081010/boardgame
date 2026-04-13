@@ -23,3 +23,5 @@
 //         main.scrollLeft = scrollLeft + width * length;
 //     }
 // }, { passive: true });
+
+document.querySelector('section').textContent = window.innerWidth + ' ' + window.innerHeight
