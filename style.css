@@ -19,7 +19,7 @@ html {
 
 main {
     display: flex;
-    height: 100dvh;
+    height: 100lvh;
     overflow-x: scroll;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
@@ -33,13 +33,13 @@ section {
     position: relative;
     flex: none;
     width: 100vw;
-    height: 100dvh;
+    height: 100lvh;
     scroll-snap-align: start;
 
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    padding: 10dvh 10vw;
+    padding: 10lvh 10vw;
     display: flex;
     flex-direction: column;
 }
