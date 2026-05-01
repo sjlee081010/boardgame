@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>인물 설정서</title>
+<style>
+* { margin: 0; padding: 0; color: inherit; box-sizing: border-box; }
+html { font-size: 16px; }
+@media (max-width: 400px) { html { font-size: 12px; } }
+body { overflow: hidden; }
+
+main {
+  display: flex;
+  height: 100lvh;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+main::-webkit-scrollbar { display: none; }
+.hidden { display: none !important; }
+
+section {
+  position: relative;
+  flex: none;
+  width: 100vw;
+  height: 100lvh;
+  scroll-snap-align: start;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 10lvh 10vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.character-section { background-color: #444; }
+.character-section .content {
+  color: #fff;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.character-section .content .label {
+  font-size: 1.7rem;
+  font-weight: 600;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 2px solid #fff;
+}
+.character-section .content > .top .name {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+.character-section .content > .top .info {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.character-section .content > .top .quote {
+  font-size: 1rem;
+  white-space: pre-line;
+}
+.character-section .content > .bottom .public-info {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.input-container {
+  position: relative;
+  margin: 60px auto 20px;
+  width: 100%;
+}
+.input-container input[type="password"] {
+  font-size: 20px;
+  letter-spacing: 2px;
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #fff;
+  padding: 5px 0;
+  background-color: transparent;
+  outline: none;
+  color: #fff;
+}
+.input-container .label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #fff;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+}
+.input-container input[type="password"]:focus ~ .label,
+.input-container input[type="password"]:valid ~ .label {
+  top: -20px;
+  font-size: 0.9rem;
+  color: #ddd;
+}
+.input-container .underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background-color: #fff;
+  transform: scaleX(0);
+  transition: all 0.3s ease;
+}
+.input-container input[type="password"]:focus ~ .underline,
+.input-container input[type="password"]:valid ~ .underline {
+  transform: scaleX(1);
+}
+.error-msg {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #ff6b6b;
+  min-height: 1.2em;
+}
+
+.script-section {
+  background: #000;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+}
+.script-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.script-last {
+  padding: 10lvh 10vw;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.script-last .script-img {
+  flex: 1;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+}
+
+.back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 100;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.back-btn:active { background: rgba(0, 0, 0, 0.7); }
+</style>
+</head>
+<body>
+
+<main id="character-main"></main>
+<main id="script-main" class="hidden"></main>
+<main id="secret-main" class="hidden"></main>
+
+<button id="back-btn" class="back-btn hidden" aria-label="뒤로가기">←</button>
+
+<template id="character-template">
+  <section class="character-section">
+    <div class="content">
+      <div class="top">
+        <h3 class="label"></h3>
+        <h1 class="name"></h1>
+        <h2 class="info"></h2>
+        <p class="quote"></p>
+      </div>
+      <div class="bottom">
+        <h3 class="label">인물 공개정보</h3>
+        <p class="public-info"></p>
+      </div>
+    </div>
+    <form class="input-container" autocomplete="off">
+      <input type="password" class="script-input" required>
+      <label class="label">암호를 입력하세요.</label>
+      <div class="underline"></div>
+      <p class="error-msg"></p>
+    </form>
+  </section>
+</template>
+
+<template id="script-page-template">
+  <section class="script-section">
+    <img class="script-img" alt="대본">
+  </section>
+</template>
+
+<template id="script-last-template">
+  <section class="script-section script-last">
+    <img class="script-img" alt="대본">
+    <form class="input-container secret-form" autocomplete="off">
+      <input type="password" class="secret-input" required>
+      <label class="label">비밀 암호를 입력하세요.</label>
+      <div class="underline"></div>
+      <p class="error-msg"></p>
+    </form>
+  </section>
+</template>
+
+<script>
+// ============================================================
+// ★ 인물 정보 - 여기만 수정하면 됩니다 ★
+// ============================================================
+//
+// 인물 추가: 아래 배열에 { ... } 객체를 더 넣으세요.
+// 줄바꿈은 \n 으로 표시.  문자열은 큰따옴표 " 로 감싸세요.
+// ============================================================
+
+const CHARACTERS = [
+
+  {
+    id: "huzapbu",
+    image: "img/characters/huzapbu.jpg",
+    label: "인물 설정서",
+    name: "허잡부",
+    info: "55세 남성",
+    quote: "끅, 씨, 내가 왕년에는 말이야,\n어? 내가 이런 곳에 있을 사람이\n아니라고. 당신들이 뭘 알아?",
+    publicInfo: "깡마르고 초췌한 인상의 중년 남성. 변변한 직장없이 용역 업체를 통해 노가다를 하며 하루벌어 하루먹고 사는 사람이다. 최근에는 그 마저도 하지 않고 정부 지원금으로 근근히 살아가고 있다. 아마도 건설현장에서 사고를 당한 이후부터인 것 같다.",
+    scriptPassword: "1234",
+    scriptPages: [
+      "img/scripts/huzapbu_1.jpg",
+      "img/scripts/huzapbu_2.jpg",
+      "img/scripts/huzapbu_3.jpg"
+    ],
+    secretPassword: "secret",
+    secretPages: [
+      "img/secrets/huzapbu_secret1.jpg"
+    ]
+  },
+
+  // 새 인물 추가 시 위 형식 그대로 복사해서 아래에 붙여넣으세요
+
+];
+
+// ============================================================
+// 아래는 화면 동작 코드 (수정할 필요 없음)
+// ============================================================
+
+const characterMain = document.getElementById('character-main');
+const scriptMain = document.getElementById('script-main');
+const secretMain = document.getElementById('secret-main');
+const backBtn = document.getElementById('back-btn');
+
+const charTemplate = document.getElementById('character-template');
+const scriptPageTemplate = document.getElementById('script-page-template');
+const scriptLastTemplate = document.getElementById('script-last-template');
+
+let currentView = 'character';
+let currentCharacter = null;
+
+function renderCharacters(characters) {
+  characterMain.innerHTML = '';
+
+  if (!characters || characters.length === 0) {
+    characterMain.innerHTML = '<section style="background:#222;color:#fff;align-items:center;justify-content:center;padding:20px;text-align:center;"><div>등록된 인물이 없습니다.</div></section>';
+    return;
+  }
+
+  characters.forEach(function(char) {
+    const node = charTemplate.content.cloneNode(true);
+    const section = node.querySelector('section');
+
+    section.style.backgroundImage = "url('" + char.image + "')";
+    section.dataset.characterId = char.id;
+
+    section.querySelector('.top .label').textContent = char.label || '인물 설정서';
+    section.querySelector('.name').textContent = char.name || '';
+    section.querySelector('.top .info').textContent = char.info || '';
+    section.querySelector('.quote').textContent = char.quote ? '"' + char.quote + '"' : '';
+    section.querySelector('.public-info').textContent = char.publicInfo || '';
+
+    const form = section.querySelector('.input-container');
+    const input = section.querySelector('.script-input');
+    const errorMsg = section.querySelector('.error-msg');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (input.value === char.scriptPassword) {
+        errorMsg.textContent = '';
+        input.value = '';
+        openScript(char);
+      } else {
+        errorMsg.textContent = '암호가 틀렸습니다.';
+        input.value = '';
+        input.focus();
+      }
+    });
+
+    characterMain.appendChild(node);
+  });
+}
+
+function openScript(character) {
+  currentCharacter = character;
+  currentView = 'script';
+  scriptMain.innerHTML = '';
+
+  const pages = character.scriptPages || [];
+  const lastIndex = pages.length - 1;
+
+  pages.forEach(function(src, idx) {
+    const isLast = idx === lastIndex;
+    const tpl = isLast ? scriptLastTemplate : scriptPageTemplate;
+    const node = tpl.content.cloneNode(true);
+
+    node.querySelector('.script-img').src = src;
+    node.querySelector('.script-img').alt = character.name + ' 대본 ' + (idx + 1);
+
+    if (isLast) {
+      const form = node.querySelector('.secret-form');
+      const input = node.querySelector('.secret-input');
+      const errorMsg = node.querySelector('.error-msg');
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (input.value === character.secretPassword) {
+          errorMsg.textContent = '';
+          input.value = '';
+          openSecret(character);
+        } else {
+          errorMsg.textContent = '암호가 틀렸습니다.';
+          input.value = '';
+          input.focus();
+        }
+      });
+    }
+
+    scriptMain.appendChild(node);
+  });
+
+  characterMain.classList.add('hidden');
+  scriptMain.classList.remove('hidden');
+  secretMain.classList.add('hidden');
+  backBtn.classList.remove('hidden');
+  scriptMain.scrollLeft = 0;
+}
+
+function openSecret(character) {
+  currentView = 'secret';
+  secretMain.innerHTML = '';
+
+  const pages = character.secretPages || [];
+  pages.forEach(function(src, idx) {
+    const node = scriptPageTemplate.content.cloneNode(true);
+    node.querySelector('.script-img').src = src;
+    node.querySelector('.script-img').alt = character.name + ' 비밀 대본 ' + (idx + 1);
+    secretMain.appendChild(node);
+  });
+
+  characterMain.classList.add('hidden');
+  scriptMain.classList.add('hidden');
+  secretMain.classList.remove('hidden');
+  backBtn.classList.remove('hidden');
+  secretMain.scrollLeft = 0;
+}
+
+backBtn.addEventListener('click', function() {
+  if (currentView === 'secret') {
+    secretMain.classList.add('hidden');
+    scriptMain.classList.remove('hidden');
+    currentView = 'script';
+  } else if (currentView === 'script') {
+    scriptMain.classList.add('hidden');
+    characterMain.classList.remove('hidden');
+    backBtn.classList.add('hidden');
+    currentView = 'character';
+    currentCharacter = null;
+  }
+});
+
+try {
+  renderCharacters(CHARACTERS);
+} catch (err) {
+  document.body.innerHTML = '<div style="padding:20px;color:#fff;background:#900;font-family:monospace;white-space:pre-wrap;font-size:14px;">에러 발생:\n' + err.message + '\n\n' + (err.stack || '') + '</div>';
+}
+
+window.addEventListener('error', function(e) {
+  document.body.innerHTML = '<div style="padding:20px;color:#fff;background:#900;font-family:monospace;white-space:pre-wrap;font-size:14px;">스크립트 에러:\n' + e.message + '\n위치: ' + e.filename + ':' + e.lineno + '</div>';
+});
+</script>
+</body>
+</html>
